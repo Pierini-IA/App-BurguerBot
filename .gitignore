@@ -1,0 +1,48 @@
+# =========================
+# Root .gitignore
+# =========================
+
+# IDE
+.idea/
+*.iml
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# =========================
+# Backend (Java/Spring)
+# =========================
+backend/target/
+backend/*.jar
+backend/.env
+backend/.mvn/wrapper/maven-wrapper.jar
+# Cache local de Maven usada por el build Docker de pruebas (no versionar)
+backend/.m2repo/
+
+# =========================
+# Frontend (Next.js)
+# =========================
+front/node_modules/
+front/.next/
+front/out/
+front/.env.local
+front/.env.*.local
+
+# =========================
+# Docker
+# =========================
+*.pid
+*.seed
+*.pid.lock
+
+# Build outputs
+dist/
+build/

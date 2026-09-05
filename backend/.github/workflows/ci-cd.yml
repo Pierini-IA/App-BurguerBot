@@ -1,0 +1,298 @@
+# ========================================
+# GitHub Actions CI/CD Pipeline
+# ========================================
+# Este workflow automatiza:
+# - Build del proyecto con Maven
+# - Ejecución de tests
+# - Análisis de código (opcional)
+# - Build de imagen Docker
+# - Push a Docker Hub / GitHub Container Registry
+# - Deploy a entornos (staging/producción)
+#
+
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+  workflow_dispatch: # Permite ejecución manual
+
+env:
+  JAVA_VERSION: "21"
+  MAVEN_VERSION: "3.9.9"
+  DOCKER_IMAGE_NAME: dioburger-api
+
+jobs:
+  # ========================================
+  # Job 1: Build y Test
+  # ========================================
+  build-and-test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout del código
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      # Setup de Java
+      - name: ☕ Set up JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: "temurin"
+          cache: "maven"
+
+      # Cache de dependencias Maven
+      - name: 📦 Cache Maven packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      # Build del proyecto
+      - name: 🔨 Build with Maven
+        run: mvn clean compile -B
+
+      # Ejecución de tests unitarios
+      - name: 🧪 Run unit tests
+        run: mvn test -B
+
+      # Ejecución de tests de integración
+      - name: 🔬 Run integration tests
+        run: mvn verify -B
+
+      # Generar reporte de cobertura
+      - name: 📊 Generate code coverage report
+        run: mvn jacoco:report
+
+      # Subir reporte de cobertura
+      - name: 📤 Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: target/site/jacoco/
+
+      # Package del JAR
+      - name: 📦 Package application
+        run: mvn package -DskipTests -B
+
+      # Guardar JAR como artifact
+      - name: 💾 Upload JAR artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: application-jar
+          path: target/*.jar
+          retention-days: 7
+
+  # ========================================
+  # Job 2: Análisis de Código (Opcional)
+  # ========================================
+  code-analysis:
+    name: Code Analysis
+    runs-on: ubuntu-latest
+    needs: build-and-test
+    if: github.event_name == 'push'
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: ☕ Set up JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: "temurin"
+          cache: "maven"
+
+      # Análisis con SonarCloud (requiere configuración)
+      # - name: 🔍 SonarCloud Scan
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      #   run: |
+      #     mvn verify sonar:sonar \
+      #       -Dsonar.projectKey=dioburger_api \
+      #       -Dsonar.organization=tu-organizacion \
+      #       -Dsonar.host.url=https://sonarcloud.io
+
+      # Análisis de dependencias vulnerables
+      - name: 🛡️ Dependency vulnerability scan
+        run: mvn dependency:analyze-report
+
+  # ========================================
+  # Job 3: Build de Imagen Docker
+  # ========================================
+  docker-build:
+    name: Docker Build and Push
+    runs-on: ubuntu-latest
+    needs: build-and-test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      # Setup de Docker Buildx
+      - name: 🐳 Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # Login a Docker Hub
+      - name: 🔑 Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+      # Login a GitHub Container Registry (alternativo)
+      - name: 🔑 Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Extraer metadata para tags
+      - name: 🏷️ Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}
+            ghcr.io/${{ github.repository }}
+          tags: |
+            type=ref,event=branch
+            type=sha,prefix={{branch}}-
+            type=semver,pattern={{version}}
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      # Build y push de imagen Docker
+      - name: 🔨 Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:buildcache
+          cache-to: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:buildcache,mode=max
+          platforms: linux/amd64,linux/arm64
+
+  # ========================================
+  # Job 4: Deploy a Staging (Opcional)
+  # ========================================
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: docker-build
+    if: github.ref == 'refs/heads/develop'
+    environment:
+      name: staging
+      url: https://staging.dioburger.com
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      # Ejemplo: Deploy a servidor remoto via SSH
+      - name: 🚀 Deploy to staging server
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.STAGING_HOST }}
+          username: ${{ secrets.STAGING_USER }}
+          key: ${{ secrets.STAGING_SSH_KEY }}
+          script: |
+            cd /opt/dioburger
+            docker compose pull
+            docker compose up -d --force-recreate
+            docker system prune -f
+
+  # ========================================
+  # Job 5: Deploy a Producción (Opcional)
+  # ========================================
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: docker-build
+    if: github.ref == 'refs/heads/main'
+    environment:
+      name: production
+      url: https://api.dioburger.com
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      # Ejemplo: Deploy a Kubernetes
+      # - name: 🚀 Deploy to Kubernetes
+      #   uses: azure/k8s-deploy@v4
+      #   with:
+      #     manifests: |
+      #       k8s/deployment.yml
+      #       k8s/service.yml
+      #     images: |
+      #       ${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:${{ github.sha }}
+
+      # Ejemplo: Deploy a servidor remoto
+      - name: 🚀 Deploy to production server
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.PRODUCTION_HOST }}
+          username: ${{ secrets.PRODUCTION_USER }}
+          key: ${{ secrets.PRODUCTION_SSH_KEY }}
+          script: |
+            cd /opt/dioburger
+            docker compose pull
+            docker compose up -d --force-recreate
+            docker system prune -f
+
+      # Notificación de deploy exitoso
+      - name: 📢 Notify deployment success
+        if: success()
+        run: |
+          echo "✅ Deployment to production successful!"
+          # Aquí puedes agregar notificaciones a Slack, Discord, etc.
+
+  # ========================================
+  # Job 6: Release (Opcional)
+  # ========================================
+  create-release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    needs: deploy-production
+    if: startsWith(github.ref, 'refs/tags/v')
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Download JAR artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: application-jar
+
+      - name: 🎉 Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            *.jar
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+# ========================================
+# Secrets Necesarios (GitHub Settings > Secrets):
+# ========================================
+# DOCKER_HUB_USERNAME      - Usuario de Docker Hub
+# DOCKER_HUB_TOKEN         - Token de acceso de Docker Hub
+# STAGING_HOST             - IP/hostname del servidor staging
+# STAGING_USER             - Usuario SSH staging
+# STAGING_SSH_KEY          - Clave privada SSH staging
+# PRODUCTION_HOST          - IP/hostname del servidor producción
+# PRODUCTION_USER          - Usuario SSH producción
+# PRODUCTION_SSH_KEY       - Clave privada SSH producción
+# SONAR_TOKEN (opcional)   - Token de SonarCloud

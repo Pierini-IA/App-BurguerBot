@@ -1,0 +1,521 @@
+{
+  "locales": [
+    {
+      "nombre": "Sistema Central",
+      "direccion": "Administración Global Dio Burger",
+      "telefono": "+000000000000",
+      "planSuscripcion": "PREMIUM",
+      "planActivo": true,
+      "fechaInicioPlan": "2024-01-01",
+      "fechaFinPlan": null,
+      "configuracion": {
+        "horaApertura": "00:00",
+        "horaCierre": "23:59",
+        "intervaloMinutosPedidos": 0,
+        "maxPedidosPorIntervalo": 0,
+        "horaAperturaReservas": "00:00",
+        "horaCierreReservas": "00:00",
+        "intervaloMinutosReservas": 0,
+        "maxReservasPorIntervalo": 0,
+        "permiteDelivery": false,
+        "permiteTakeAway": false,
+        "permiteReservas": false,
+        "impresionActiva": false,
+        "urlWebhookImpresora": null
+      },
+      "ingredientes": [],
+      "productos": [],
+      "mesas": [],
+      "extras": [],
+      "usuarios": [
+        {
+          "username": "superadmin",
+          "password": "SuperAdmin123!",
+          "rol": "ROLE_SUPERADMIN"
+        }
+      ]
+    },
+    {
+      "nombre": "Burger Express Centro",
+      "direccion": "Av. Corrientes 1234, CABA",
+      "telefono": "+5491112345678",
+      "planSuscripcion": "BASICO",
+      "planActivo": true,
+      "fechaInicioPlan": "2025-01-15",
+      "fechaFinPlan": "2026-01-15",
+      "configuracion": {
+        "horaApertura": "11:00",
+        "horaCierre": "23:00",
+        "intervaloMinutosPedidos": 15,
+        "maxPedidosPorIntervalo": 5,
+        "horaAperturaReservas": "12:00",
+        "horaCierreReservas": "22:00",
+        "intervaloMinutosReservas": 30,
+        "maxReservasPorIntervalo": 2,
+        "permiteDelivery": false,
+        "permiteTakeAway": true,
+        "permiteReservas": false,
+        "impresionActiva": false,
+        "urlWebhookImpresora": null
+      },
+      "ingredientes": [
+        { "nombre": "Pan de hamburguesa", "stockActual": 100, "unidadMedida": "UNIDAD" },
+        { "nombre": "Carne vacuna 120g", "stockActual": 80, "unidadMedida": "PORCION" },
+        { "nombre": "Queso Cheddar", "stockActual": 120, "unidadMedida": "FETA" },
+        { "nombre": "Lechuga", "stockActual": 50, "unidadMedida": "HOJA" },
+        { "nombre": "Tomate", "stockActual": 60, "unidadMedida": "RODAJA" },
+        { "nombre": "Cebolla morada", "stockActual": 40, "unidadMedida": "PUNADO" },
+        { "nombre": "Pepinillos", "stockActual": 30, "unidadMedida": "UNIDAD" },
+        { "nombre": "Salsa especial", "stockActual": 25, "unidadMedida": "PORCION" },
+        { "nombre": "Bacon", "stockActual": 50, "unidadMedida": "FETA" },
+        { "nombre": "Huevo frito", "stockActual": 30, "unidadMedida": "UNIDAD" }
+      ],
+      "productos": [
+        {
+          "nombre": "Burger Clásica",
+          "precio": 7500.0,
+          "descripcion": "Hamburguesa tradicional con carne, cheddar, lechuga, tomate y cebolla",
+          "receta": [
+            { "ingrediente": "Pan de hamburguesa", "cantidad": 1 },
+            { "ingrediente": "Carne vacuna 120g", "cantidad": 1 },
+            { "ingrediente": "Queso Cheddar", "cantidad": 2 },
+            { "ingrediente": "Lechuga", "cantidad": 2 },
+            { "ingrediente": "Tomate", "cantidad": 2 },
+            { "ingrediente": "Cebolla morada", "cantidad": 1 }
+          ]
+        },
+        {
+          "nombre": "Cheese Burger",
+          "precio": 8500.0,
+          "descripcion": "Doble cheddar con salsa especial",
+          "receta": [
+            { "ingrediente": "Pan de hamburguesa", "cantidad": 1 },
+            { "ingrediente": "Carne vacuna 120g", "cantidad": 1 },
+            { "ingrediente": "Queso Cheddar", "cantidad": 3 },
+            { "ingrediente": "Salsa especial", "cantidad": 1 },
+            { "ingrediente": "Pepinillos", "cantidad": 3 }
+          ]
+        },
+        {
+          "nombre": "Bacon Burger",
+          "precio": 10000.0,
+          "descripcion": "Con doble bacon crujiente y cebolla",
+          "receta": [
+            { "ingrediente": "Pan de hamburguesa", "cantidad": 1 },
+            { "ingrediente": "Carne vacuna 120g", "cantidad": 1 },
+            { "ingrediente": "Bacon", "cantidad": 3 },
+            { "ingrediente": "Queso Cheddar", "cantidad": 2 },
+            { "ingrediente": "Cebolla morada", "cantidad": 1 },
+            { "ingrediente": "Salsa especial", "cantidad": 1 }
+          ]
+        },
+        {
+          "nombre": "Egg Burger",
+          "precio": 9500.0,
+          "descripcion": "Hamburguesa con huevo frito y bacon",
+          "receta": [
+            { "ingrediente": "Pan de hamburguesa", "cantidad": 1 },
+            { "ingrediente": "Carne vacuna 120g", "cantidad": 1 },
+            { "ingrediente": "Huevo frito", "cantidad": 1 },
+            { "ingrediente": "Bacon", "cantidad": 2 },
+            { "ingrediente": "Queso Cheddar", "cantidad": 2 }
+          ]
+        },
+        {
+          "nombre": "Simple Burger",
+          "precio": 6000.0,
+          "descripcion": "Hamburguesa básica con carne y queso",
+          "receta": [
+            { "ingrediente": "Pan de hamburguesa", "cantidad": 1 },
+            { "ingrediente": "Carne vacuna 120g", "cantidad": 1 },
+            { "ingrediente": "Queso Cheddar", "cantidad": 1 }
+          ]
+        }
+      ],
+      "mesas": [
+        { "numero": 1, "capacidad": 2 },
+        { "numero": 2, "capacidad": 2 },
+        { "numero": 3, "capacidad": 4 },
+        { "numero": 4, "capacidad": 4 }
+      ],
+      "extras": [
+        { "nombre": "Queso Cheddar Extra", "descripcion": "Feta adicional de queso cheddar", "precioAdicional": 800.0 },
+        { "nombre": "Bacon Extra", "descripcion": "Porción adicional de bacon", "precioAdicional": 1000.0 },
+        { "nombre": "Huevo Frito", "descripcion": "Huevo frito adicional", "precioAdicional": 600.0 },
+        { "nombre": "Cebolla Caramelizada", "descripcion": "Porción de cebolla caramelizada", "precioAdicional": 500.0 }
+      ],
+      "usuarios": [
+        {
+          "username": "admin_centro",
+          "password": "Admin123!",
+          "rol": "ROLE_ADMIN"
+        }
+      ]
+    },
+    {
+      "nombre": "Dio Burger & Pizza Palermo",
+      "direccion": "Av. Santa Fe 3456, CABA",
+      "telefono": "+5491187654321",
+      "planSuscripcion": "ESTANDAR",
+      "planActivo": true,
+      "fechaInicioPlan": "2025-02-01",
+      "fechaFinPlan": "2026-02-01",
+      "configuracion": {
+        "horaApertura": "18:00",
+        "horaCierre": "00:00",
+        "intervaloMinutosPedidos": 15,
+        "maxPedidosPorIntervalo": 8,
+        "horaAperturaReservas": "19:00",
+        "horaCierreReservas": "23:00",
+        "intervaloMinutosReservas": 30,
+        "maxReservasPorIntervalo": 4,
+        "permiteDelivery": true,
+        "permiteTakeAway": true,
+        "permiteReservas": true,
+        "impresionActiva": false,
+        "urlWebhookImpresora": null
+      },
+      "ingredientes": [
+        { "nombre": "Pan de hamburguesa", "stockActual": 150, "unidadMedida": "UNIDAD" },
+        { "nombre": "Masa de pizza", "stockActual": 80, "unidadMedida": "UNIDAD" },
+        { "nombre": "Carne vacuna 150g", "stockActual": 120, "unidadMedida": "PORCION" },
+        { "nombre": "Salsa de tomate", "stockActual": 100, "unidadMedida": "PORCION" },
+        { "nombre": "Mozzarella", "stockActual": 200, "unidadMedida": "PORCION" },
+        { "nombre": "Queso Cheddar", "stockActual": 180, "unidadMedida": "FETA" },
+        { "nombre": "Lechuga", "stockActual": 70, "unidadMedida": "HOJA" },
+        { "nombre": "Tomate", "stockActual": 90, "unidadMedida": "RODAJA" },
+        { "nombre": "Cebolla", "stockActual": 60, "unidadMedida": "PUNADO" },
+        { "nombre": "Bacon", "stockActual": 80, "unidadMedida": "FETA" },
+        { "nombre": "Jamón", "stockActual": 100, "unidadMedida": "FETA" },
+        { "nombre": "Champignones", "stockActual": 50, "unidadMedida": "PORCION" },
+        { "nombre": "Aceitunas", "stockActual": 40, "unidadMedida": "PORCION" },
+        { "nombre": "Morrones", "stockActual": 45, "unidadMedida": "PORCION" },
+        { "nombre": "Huevo", "stockActual": 50, "unidadMedida": "UNIDAD" },
+        { "nombre": "Cebolla caramelizada", "stockActual": 40, "unidadMedida": "PORCION" }
+      ],
+      "productos": [
+        {
+          "nombre": "Burger Clásica",
+          "precio": 9000.0,
+          "descripcion": "Hamburguesa con cheddar, lechuga, tomate y cebolla",
+          "receta": [
+            { "ingrediente": "Pan de hamburguesa", "cantidad": 1 },
+            { "ingrediente": "Carne vacuna 150g", "cantidad": 1 },
+            { "ingrediente": "Queso Cheddar", "cantidad": 2 },
+            { "ingrediente": "Lechuga", "cantidad": 2 },
+            { "ingrediente": "Tomate", "cantidad": 2 },
+            { "ingrediente": "Cebolla", "cantidad": 1 }
+          ]
+        },
+        {
+          "nombre": "Bacon Lovers",
+          "precio": 11500.0,
+          "descripcion": "Hamburguesa con triple bacon y cebolla caramelizada",
+          "receta": [
+            { "ingrediente": "Pan de hamburguesa", "cantidad": 1 },
+            { "ingrediente": "Carne vacuna 150g", "cantidad": 1 },
+            { "ingrediente": "Bacon", "cantidad": 4 },
+            { "ingrediente": "Queso Cheddar", "cantidad": 2 },
+            { "ingrediente": "Cebolla caramelizada", "cantidad": 1 }
+          ]
+        },
+        {
+          "nombre": "Especial con Huevo",
+          "precio": 10500.0,
+          "descripcion": "Hamburguesa con huevo frito, bacon y cheddar",
+          "receta": [
+            { "ingrediente": "Pan de hamburguesa", "cantidad": 1 },
+            { "ingrediente": "Carne vacuna 150g", "cantidad": 1 },
+            { "ingrediente": "Huevo", "cantidad": 1 },
+            { "ingrediente": "Bacon", "cantidad": 2 },
+            { "ingrediente": "Queso Cheddar", "cantidad": 2 }
+          ]
+        },
+        {
+          "nombre": "Pizza Muzzarella",
+          "precio": 8500.0,
+          "descripcion": "Pizza clásica con mozzarella y salsa de tomate",
+          "receta": [
+            { "ingrediente": "Masa de pizza", "cantidad": 1 },
+            { "ingrediente": "Salsa de tomate", "cantidad": 1 },
+            { "ingrediente": "Mozzarella", "cantidad": 3 }
+          ]
+        },
+        {
+          "nombre": "Pizza Napolitana",
+          "precio": 10000.0,
+          "descripcion": "Mozzarella, tomate en rodajas y aceitunas",
+          "receta": [
+            { "ingrediente": "Masa de pizza", "cantidad": 1 },
+            { "ingrediente": "Salsa de tomate", "cantidad": 1 },
+            { "ingrediente": "Mozzarella", "cantidad": 3 },
+            { "ingrediente": "Tomate", "cantidad": 4 },
+            { "ingrediente": "Aceitunas", "cantidad": 1 }
+          ]
+        },
+        {
+          "nombre": "Pizza Fugazzeta",
+          "precio": 11000.0,
+          "descripcion": "Mozzarella, cebolla y cheddar",
+          "receta": [
+            { "ingrediente": "Masa de pizza", "cantidad": 1 },
+            { "ingrediente": "Mozzarella", "cantidad": 3 },
+            { "ingrediente": "Cebolla", "cantidad": 2 },
+            { "ingrediente": "Queso Cheddar", "cantidad": 1 }
+          ]
+        },
+        {
+          "nombre": "Pizza Especial",
+          "precio": 12500.0,
+          "descripcion": "Jamón, morrones, champignones y aceitunas",
+          "receta": [
+            { "ingrediente": "Masa de pizza", "cantidad": 1 },
+            { "ingrediente": "Salsa de tomate", "cantidad": 1 },
+            { "ingrediente": "Mozzarella", "cantidad": 3 },
+            { "ingrediente": "Jamón", "cantidad": 2 },
+            { "ingrediente": "Morrones", "cantidad": 1 },
+            { "ingrediente": "Champignones", "cantidad": 1 },
+            { "ingrediente": "Aceitunas", "cantidad": 1 }
+          ]
+        }
+      ],
+      "mesas": [
+        { "numero": 1, "capacidad": 2 },
+        { "numero": 2, "capacidad": 2 },
+        { "numero": 3, "capacidad": 2 },
+        { "numero": 4, "capacidad": 4 },
+        { "numero": 5, "capacidad": 4 },
+        { "numero": 6, "capacidad": 4 },
+        { "numero": 7, "capacidad": 6 },
+        { "numero": 8, "capacidad": 6 }
+      ],
+      "extras": [
+        {
+          "nombre": "Queso Cheddar Extra",
+          "descripcion": "Feta adicional de queso cheddar",
+          "precioAdicional": 1000.0
+        },
+        {
+          "nombre": "Queso Mozzarella Extra",
+          "descripcion": "Porción adicional de mozzarella",
+          "precioAdicional": 900.0
+        },
+        { "nombre": "Bacon Extra", "descripcion": "Porción adicional de bacon crujiente", "precioAdicional": 1200.0 },
+        { "nombre": "Jamón Extra", "descripcion": "Fetas adicionales de jamón", "precioAdicional": 1000.0 },
+        {
+          "nombre": "Champignones Extra",
+          "descripcion": "Porción adicional de champignones",
+          "precioAdicional": 800.0
+        },
+        { "nombre": "Aceitunas Extra", "descripcion": "Porción adicional de aceitunas", "precioAdicional": 600.0 },
+        {
+          "nombre": "Cebolla Caramelizada",
+          "descripcion": "Porción de cebolla caramelizada",
+          "precioAdicional": 700.0
+        },
+        { "nombre": "Huevo Frito", "descripcion": "Huevo frito adicional", "precioAdicional": 800.0 }
+      ],
+      "usuarios": [
+        {
+          "username": "admin_palermo",
+          "password": "Admin123!",
+          "rol": "ROLE_ADMIN"
+        },
+        {
+          "username": "cocina_palermo",
+          "password": "Cocina123!",
+          "rol": "ROLE_COCINA"
+        }
+      ]
+    },
+    {
+      "nombre": "Dio Gourmet Recoleta",
+      "direccion": "Av. Callao 2000, CABA",
+      "telefono": "+5491198765432",
+      "planSuscripcion": "PREMIUM",
+      "planActivo": true,
+      "fechaInicioPlan": "2025-03-01",
+      "fechaFinPlan": null,
+      "configuracion": {
+        "horaApertura": "12:00",
+        "horaCierre": "01:00",
+        "intervaloMinutosPedidos": 10,
+        "maxPedidosPorIntervalo": 12,
+        "horaAperturaReservas": "12:00",
+        "horaCierreReservas": "00:00",
+        "intervaloMinutosReservas": 30,
+        "maxReservasPorIntervalo": 6,
+        "permiteDelivery": true,
+        "permiteTakeAway": true,
+        "permiteReservas": true,
+        "impresionActiva": true,
+        "urlWebhookImpresora": "http://localhost:3000/webhook/impresora"
+      },
+      "ingredientes": [
+        { "nombre": "Pan brioche premium", "stockActual": 200, "unidadMedida": "UNIDAD" },
+        { "nombre": "Carne wagyu 180g", "stockActual": 100, "unidadMedida": "PORCION" },
+        { "nombre": "Queso Brie", "stockActual": 80, "unidadMedida": "PORCION" },
+        { "nombre": "Queso Roquefort", "stockActual": 70, "unidadMedida": "PORCION" },
+        { "nombre": "Queso Cheddar añejo", "stockActual": 150, "unidadMedida": "FETA" },
+        { "nombre": "Rúcula", "stockActual": 100, "unidadMedida": "PUNADO" },
+        { "nombre": "Tomate confitado", "stockActual": 80, "unidadMedida": "PORCION" },
+        { "nombre": "Cebolla caramelizada", "stockActual": 90, "unidadMedida": "PORCION" },
+        { "nombre": "Bacon artesanal", "stockActual": 120, "unidadMedida": "FETA" },
+        { "nombre": "Huevo de campo", "stockActual": 80, "unidadMedida": "UNIDAD" },
+        { "nombre": "Champignones portobello", "stockActual": 60, "unidadMedida": "PORCION" },
+        { "nombre": "Salsa trufada", "stockActual": 50, "unidadMedida": "PORCION" },
+        { "nombre": "Salsa BBQ premium", "stockActual": 70, "unidadMedida": "PORCION" },
+        { "nombre": "Jalapeños", "stockActual": 60, "unidadMedida": "PORCION" },
+        { "nombre": "Palta", "stockActual": 50, "unidadMedida": "UNIDAD" },
+        { "nombre": "Papas rústicas", "stockActual": 200, "unidadMedida": "PORCION" }
+      ],
+      "productos": [
+        {
+          "nombre": "Wagyu Deluxe",
+          "precio": 18500.0,
+          "descripcion": "Hamburguesa premium con carne wagyu, queso brie y rúcula",
+          "receta": [
+            { "ingrediente": "Pan brioche premium", "cantidad": 1 },
+            { "ingrediente": "Carne wagyu 180g", "cantidad": 1 },
+            { "ingrediente": "Queso Brie", "cantidad": 2 },
+            { "ingrediente": "Rúcula", "cantidad": 1 },
+            { "ingrediente": "Tomate confitado", "cantidad": 1 },
+            { "ingrediente": "Cebolla caramelizada", "cantidad": 1 }
+          ]
+        },
+        {
+          "nombre": "Truffle Burger",
+          "precio": 21000.0,
+          "descripcion": "Wagyu con salsa trufada, portobello y roquefort",
+          "receta": [
+            { "ingrediente": "Pan brioche premium", "cantidad": 1 },
+            { "ingrediente": "Carne wagyu 180g", "cantidad": 1 },
+            { "ingrediente": "Queso Roquefort", "cantidad": 2 },
+            { "ingrediente": "Champignones portobello", "cantidad": 1 },
+            { "ingrediente": "Salsa trufada", "cantidad": 1 },
+            { "ingrediente": "Rúcula", "cantidad": 1 }
+          ]
+        },
+        {
+          "nombre": "Bacon Premium",
+          "precio": 17000.0,
+          "descripcion": "Triple bacon artesanal con cheddar añejo y BBQ premium",
+          "receta": [
+            { "ingrediente": "Pan brioche premium", "cantidad": 1 },
+            { "ingrediente": "Carne wagyu 180g", "cantidad": 1 },
+            { "ingrediente": "Bacon artesanal", "cantidad": 4 },
+            { "ingrediente": "Queso Cheddar añejo", "cantidad": 3 },
+            { "ingrediente": "Cebolla caramelizada", "cantidad": 1 },
+            { "ingrediente": "Salsa BBQ premium", "cantidad": 1 }
+          ]
+        },
+        {
+          "nombre": "Mexican Fire",
+          "precio": 16500.0,
+          "descripcion": "Burger picante con jalapeños, cheddar y salsa especial",
+          "receta": [
+            { "ingrediente": "Pan brioche premium", "cantidad": 1 },
+            { "ingrediente": "Carne wagyu 180g", "cantidad": 1 },
+            { "ingrediente": "Queso Cheddar añejo", "cantidad": 2 },
+            { "ingrediente": "Jalapeños", "cantidad": 1 },
+            { "ingrediente": "Cebolla caramelizada", "cantidad": 1 },
+            { "ingrediente": "Bacon artesanal", "cantidad": 2 }
+          ]
+        },
+        {
+          "nombre": "Avocado Burger",
+          "precio": 19000.0,
+          "descripcion": "Wagyu con palta, huevo de campo y rúcula",
+          "receta": [
+            { "ingrediente": "Pan brioche premium", "cantidad": 1 },
+            { "ingrediente": "Carne wagyu 180g", "cantidad": 1 },
+            { "ingrediente": "Palta", "cantidad": 1 },
+            { "ingrediente": "Huevo de campo", "cantidad": 1 },
+            { "ingrediente": "Queso Cheddar añejo", "cantidad": 2 },
+            { "ingrediente": "Rúcula", "cantidad": 1 },
+            { "ingrediente": "Tomate confitado", "cantidad": 1 }
+          ]
+        },
+        {
+          "nombre": "Papas Rústicas",
+          "precio": 4500.0,
+          "descripcion": "Papas artesanales con especias",
+          "receta": [{ "ingrediente": "Papas rústicas", "cantidad": 1 }]
+        }
+      ],
+      "mesas": [
+        { "numero": 1, "capacidad": 2 },
+        { "numero": 2, "capacidad": 2 },
+        { "numero": 3, "capacidad": 2 },
+        { "numero": 4, "capacidad": 2 },
+        { "numero": 5, "capacidad": 4 },
+        { "numero": 6, "capacidad": 4 },
+        { "numero": 7, "capacidad": 4 },
+        { "numero": 8, "capacidad": 4 },
+        { "numero": 9, "capacidad": 6 },
+        { "numero": 10, "capacidad": 6 },
+        { "numero": 11, "capacidad": 6 },
+        { "numero": 12, "capacidad": 8 },
+        { "numero": 13, "capacidad": 8 }
+      ],
+      "extras": [
+        {
+          "nombre": "Queso Brie Premium",
+          "descripcion": "Porción adicional de queso brie francés",
+          "precioAdicional": 2000.0
+        },
+        {
+          "nombre": "Queso Roquefort",
+          "descripcion": "Porción adicional de queso roquefort",
+          "precioAdicional": 2200.0
+        },
+        {
+          "nombre": "Queso Cheddar Añejo",
+          "descripcion": "Feta adicional de cheddar añejo",
+          "precioAdicional": 1500.0
+        },
+        {
+          "nombre": "Bacon Artesanal Extra",
+          "descripcion": "Porción adicional de bacon artesanal ahumado",
+          "precioAdicional": 1800.0
+        },
+        {
+          "nombre": "Champignones Portobello",
+          "descripcion": "Hongos portobello grillados",
+          "precioAdicional": 1600.0
+        },
+        { "nombre": "Palta Fresca", "descripcion": "Media palta adicional", "precioAdicional": 1400.0 },
+        { "nombre": "Huevo de Campo", "descripcion": "Huevo de campo orgánico", "precioAdicional": 1200.0 },
+        { "nombre": "Salsa Trufada", "descripcion": "Porción extra de salsa trufada", "precioAdicional": 2500.0 },
+        {
+          "nombre": "Cebolla Caramelizada Premium",
+          "descripcion": "Cebolla caramelizada con vino tinto",
+          "precioAdicional": 1000.0
+        },
+        { "nombre": "Rúcula Fresca", "descripcion": "Porción adicional de rúcula", "precioAdicional": 800.0 },
+        {
+          "nombre": "Jalapeños en Escabeche",
+          "descripcion": "Porción de jalapeños picantes",
+          "precioAdicional": 900.0
+        },
+        {
+          "nombre": "Papas Rústicas Extra",
+          "descripcion": "Porción adicional de papas rústicas",
+          "precioAdicional": 2000.0
+        }
+      ],
+      "usuarios": [
+        {
+          "username": "admin_recoleta",
+          "password": "Admin123!",
+          "rol": "ROLE_ADMIN"
+        },
+        {
+          "username": "cocina_recoleta",
+          "password": "Cocina123!",
+          "rol": "ROLE_COCINA"
+        }
+      ]
+    }
+  ]
+}

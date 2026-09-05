@@ -1,0 +1,46 @@
+# Stack completo para pruebas E2E locales: Postgres + backend.
+#   docker compose -p dioburger_e2e -f docker-compose.local.yml up -d --build
+# El frontend se corre aparte con `npm run dev` (puerto 3000).
+name: dioburger_e2e
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: dioburger
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+    tmpfs:
+      - /var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 15
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.local
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      # El backend debe correr en la zona horaria del mercado: si no, los filtros
+      # "de hoy" (Pedidos, Dashboard) se rompen cerca de medianoche UTC.
+      TZ: America/Argentina/Buenos_Aires
+      SPRING_PROFILES_ACTIVE: default
+      DATABASE_URL: jdbc:postgresql://postgres:5432/dioburger
+      DATABASE_USERNAME: postgres
+      DATABASE_PASSWORD: postgres
+      JWT_SECRET: local-e2e-secret-please-change-1234567890
+      JWT_EXPIRATION: "86400000"
+      BOT_API_KEY: local-bot-key
+      META_WEBHOOK_VERIFY_TOKEN: local-verify-token
+      DRY_RUN_META_SEND: "true"
+      OPENAI_API_KEY: ""
+      GOOGLE_AI_API_KEY: ""
+    ports:
+      - "8080:8080"

@@ -1,0 +1,80 @@
+spring:
+  application:
+    name: dio-burger-api
+
+  datasource:
+    # Los nombres de variable son los mismos que en application.yml a proposito.
+    # Este perfil se activa solo (el Dockerfile setea SPRING_PROFILES_ACTIVE=prod),
+    # asi que si acá se llamaran distinto, el deploy arrancaria con los defaults
+    # (localhost / usuario postgres) sin que nada avise. DB_USERNAME y DB_PASSWORD
+    # se siguen aceptando como alias por compatibilidad.
+    url: ${DATABASE_URL:jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:dioburger}}
+    username: ${DATABASE_USERNAME:${DB_USERNAME:postgres}}
+    password: ${DATABASE_PASSWORD:${DB_PASSWORD:}}
+    driver-class-name: org.postgresql.Driver
+
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        jdbc:
+          batch_size: 20
+        order_inserts: true
+        order_updates: true
+
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+    validate-on-migrate: true
+
+  security:
+    jwt:
+      secret: ${JWT_SECRET}
+      expiration: 86400000 # 24 horas
+
+app:
+  bot:
+    api-key: ${BOT_API_KEY}
+
+server:
+  port: ${PORT:8080}
+  compression:
+    enabled: true
+  error:
+    include-message: never
+    include-stacktrace: never
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: when-authorized
+
+logging:
+  level:
+    root: INFO
+    com.dioburger: INFO
+    org.springframework: WARN
+    org.hibernate: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: logs/dio-burger-api.log
+    max-size: 10MB
+    max-history: 30

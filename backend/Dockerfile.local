@@ -1,0 +1,14 @@
+# Build + run local para pruebas E2E. No usa el Maven wrapper (falta en el repo);
+# usa la imagen oficial de Maven. El Dockerfile de producción es `Dockerfile`.
+FROM maven:3.9-eclipse-temurin-21 AS build
+WORKDIR /app
+COPY pom.xml .
+RUN mvn -B -q dependency:go-offline
+COPY src ./src
+RUN mvn -B -q clean package -DskipTests
+
+FROM eclipse-temurin:21-jre-alpine
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "app.jar"]

@@ -1,0 +1,170 @@
+# ========================================
+# Application Configuration - Docker Profile
+# ========================================
+# Este archivo contiene la configuración específica
+# para ejecutar la aplicación en contenedores Docker
+#
+# Activar con: SPRING_PROFILES_ACTIVE=docker
+#
+
+spring:
+  application:
+    name: dio-burger-api
+
+  # ========================================
+  # Database Configuration
+  # ========================================
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://postgres:5432/dioburger}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+
+    # HikariCP Connection Pool
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      connection-timeout: 20000
+      idle-timeout: 300000
+      max-lifetime: 1200000
+      leak-detection-threshold: 60000
+
+  # ========================================
+  # JPA/Hibernate Configuration
+  # ========================================
+  jpa:
+    hibernate:
+      ddl-auto: validate # No modifica esquema, solo valida
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        use_sql_comments: false
+        jdbc:
+          batch_size: 20
+        order_inserts: true
+        order_updates: true
+        cache:
+          use_second_level_cache: false
+
+  # ========================================
+  # Flyway Migration
+  # ========================================
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+    validate-on-migrate: true
+    out-of-order: false
+    placeholder-replacement: true
+
+  # ========================================
+  # Jackson JSON Configuration
+  # ========================================
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+      indent-output: false # Desactivar en producción
+    deserialization:
+      fail-on-unknown-properties: false
+    time-zone: America/Argentina/Buenos_Aires
+    default-property-inclusion: non_null
+
+  # ========================================
+  # Server Configuration
+  # ========================================
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+server:
+  port: 8080
+  compression:
+    enabled: true
+    mime-types: application/json,application/xml,text/html,text/xml,text/plain
+  error:
+    include-message: always
+    include-binding-errors: never
+    include-stacktrace: never # No exponer stack traces en producción
+    include-exception: false
+
+# ========================================
+# JWT Configuration
+# ========================================
+jwt:
+  secret: ${JWT_SECRET:dio-burger-default-secret-key-change-this}
+  expiration: ${JWT_EXPIRATION:86400000} # 24 horas en milisegundos
+
+# ========================================
+# Logging Configuration
+# ========================================
+logging:
+  level:
+    root: INFO
+    com.dioburger: DEBUG
+    org.springframework.web: INFO
+    org.springframework.security: INFO
+    org.hibernate.SQL: INFO
+    org.hibernate.type.descriptor.sql.BasicBinder: INFO
+    org.flywaydb: INFO
+
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
+  file:
+    name: /app/logs/dioburger.log
+    max-size: 10MB
+    max-history: 30
+    total-size-cap: 1GB
+
+# ========================================
+# Actuator Configuration
+# ========================================
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+      base-path: /actuator
+
+  endpoint:
+    health:
+      show-details: when-authorized
+      probes:
+        enabled: true
+
+  health:
+    livenessState:
+      enabled: true
+    readinessState:
+      enabled: true
+
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
+# ========================================
+# CORS Configuration (ajustar en producción)
+# ========================================
+cors:
+  allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000,http://localhost:4200}
+  allowed-methods: GET,POST,PUT,DELETE,PATCH,OPTIONS
+  allowed-headers: "*"
+  allow-credentials: true
+  max-age: 3600
+
+# ========================================
+# Application Info
+# ========================================
+info:
+  app:
+    name: Dio Burger API
+    description: Sistema de gestión de hamburguesería
+    version: 1.4.0
+    encoding: UTF-8
+    java:
+      version: 21

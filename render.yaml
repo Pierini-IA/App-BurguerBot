@@ -1,0 +1,135 @@
+# ============================================================================
+# Blueprint de Render — App-BurguerBot (Proyecto Final)
+#
+# Levanta los tres recursos del sistema en una sola operacion:
+#   - dioburger-db     PostgreSQL 16 administrado
+#   - dioburger-api    backend Spring Boot (build por Docker)
+#   - dioburger-front  panel Next.js
+#
+# Uso: Render Dashboard -> New -> Blueprint -> elegir este repo.
+# Las claves marcadas con `sync: false` NO viajan en el repo: se cargan a mano
+# en el dashboard de cada servicio.
+# ============================================================================
+
+databases:
+  - name: dioburger-db
+    databaseName: dioburger_db
+    user: dioburger_db_user
+    plan: free
+    region: oregon
+    postgresMajorVersion: "16"
+
+services:
+  # --------------------------------------------------------------------------
+  # Backend — Spring Boot 3.2 / Java 21
+  # --------------------------------------------------------------------------
+  - type: web
+    name: dioburger-api
+    runtime: docker
+    region: oregon
+    plan: free
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    healthCheckPath: /api/health
+    autoDeployTrigger: commit
+    # Sin esto, un cambio que solo toca el frontend reinicia igual el backend.
+    # Ademas de ser trabajo al vacio, es riesgoso: el buffer de mensajes de Meta
+    # vive en memoria, asi que un reinicio dentro de su ventana de 12 segundos
+    # descarta el mensaje del cliente sin dejar rastro.
+    buildFilter:
+      paths:
+        - backend/**
+        - render.yaml
+    envVars:
+      # --- Base de datos: Render inyecta las partes, Spring arma la URL JDBC ---
+      # Estos nombres tienen que coincidir con los que lee el perfil activo.
+      # El Dockerfile activa SPRING_PROFILES_ACTIVE=prod, asi que mandan los
+      # placeholders de application-prod.yml. Si no coinciden, Spring cae a los
+      # defaults (localhost / usuario postgres) y el deploy falla sin decir por que.
+      - key: DB_HOST
+        fromDatabase:
+          name: dioburger-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: dioburger-db
+          property: port
+      - key: DB_NAME
+        fromDatabase:
+          name: dioburger-db
+          property: database
+      - key: DATABASE_USERNAME
+        fromDatabase:
+          name: dioburger-db
+          property: user
+      - key: DATABASE_PASSWORD
+        fromDatabase:
+          name: dioburger-db
+          property: password
+
+      # --- Runtime ---
+      # El plan free son 512 MB: sin este limite la JVM se queda sin memoria.
+      - key: JAVA_OPTS
+        value: -Xms128m -Xmx340m -XX:MaxMetaspaceSize=128m -XX:+UseSerialGC -Xss512k
+      # Sin esto los filtros "de hoy" (Pedidos, Dashboard) pierden los pedidos
+      # de la noche, porque el server corre en UTC.
+      - key: TZ
+        value: America/Argentina/Buenos_Aires
+      - key: PORT
+        value: "8080"
+      - key: SPRING_JPA_SHOW_SQL
+        value: "false"
+      - key: LOGGING_LEVEL_ORG_HIBERNATE_SQL
+        value: WARN
+      - key: LOGGING_LEVEL_ORG_HIBERNATE_TYPE_DESCRIPTOR_SQL_BASICBINDER
+        value: WARN
+
+      # --- Seguridad ---
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRATION
+        value: "86400000"
+      - key: BOT_API_KEY
+        generateValue: true
+      - key: CORS_ALLOWED_ORIGINS
+        value: https://dioburger-front.onrender.com
+
+      # --- Integracion con Meta + IA ---
+      # DRY_RUN_META_SEND=true: el agente procesa el mensaje y crea el pedido,
+      # pero la respuesta al cliente sale por log en vez de por la Graph API.
+      # Pasar a "false" recien cuando el numero de WhatsApp este verificado.
+      - key: DRY_RUN_META_SEND
+        value: "true"
+      - key: META_WEBHOOK_VERIFY_TOKEN
+        generateValue: true
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: GOOGLE_AI_API_KEY
+        sync: false
+
+  # --------------------------------------------------------------------------
+  # Frontend — Next.js 16 / React 19 / MUI 7
+  # --------------------------------------------------------------------------
+  - type: web
+    name: dioburger-front
+    runtime: node
+    region: oregon
+    plan: free
+    rootDir: front
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    autoDeployTrigger: commit
+    buildFilter:
+      paths:
+        - front/**
+        - render.yaml
+    envVars:
+      # Se hornean en el bundle durante el build, no en runtime.
+      - key: NEXT_PUBLIC_API_URL
+        value: https://dioburger-api.onrender.com/api
+      - key: NEXT_PUBLIC_WS_URL
+        value: https://dioburger-api.onrender.com
+      - key: NEXT_PUBLIC_APP_NAME
+        value: Dio Burger
+      - key: NODE_VERSION
+        value: "22"
